@@ -1,7 +1,11 @@
+@file:OptIn(ExperimentalContracts::class)
+
 package uk.org.lidalia.kotlinfromgroovy
 
 import org.codehaus.groovy.ast.ASTNode
+import org.codehaus.groovy.ast.ClassCodeExpressionTransformer
 import org.codehaus.groovy.ast.expr.DeclarationExpression
+import org.codehaus.groovy.ast.expr.Expression
 import org.codehaus.groovy.ast.expr.MethodCallExpression
 import org.codehaus.groovy.ast.expr.NamedArgumentListExpression
 import org.codehaus.groovy.ast.expr.TupleExpression
@@ -11,17 +15,48 @@ import org.codehaus.groovy.control.CompilePhase
 import org.codehaus.groovy.control.SourceUnit
 import org.codehaus.groovy.transform.AbstractASTTransformation
 import org.codehaus.groovy.transform.GroovyASTTransformation
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 
-@GroovyASTTransformation(phase= CompilePhase.SEMANTIC_ANALYSIS)
+@GroovyASTTransformation(phase= CompilePhase.INSTRUCTION_SELECTION)
 class KotlinDataClassCopyMethodASTTransformation : AbstractASTTransformation() {
 
     override fun visit(nodes: Array<ASTNode>, source: SourceUnit) {
-        val namedArgumentMethodCalls = source.findNamedArgumentMethodCalls()
+        val trn = object : ClassCodeExpressionTransformer() {
+            override fun getSourceUnit(): SourceUnit = source
+            override fun transform(expr: Expression?): Expression? {
+                return if (isNamedArgumentMethodCall(expr)) {
+                    println()
+                    println("Expression: $expr")
+                    println("Expression.text: ${expr.text}")
+                    println("Expression.isImplicitThis: ${expr.isImplicitThis}")
+                    println("Expression.objectExpression: ${expr.objectExpression}")
+                    println("Expression.methodTarget: ${expr.methodTarget}")
+                    println("Expression.method: ${expr.method}")
+                    println("Expression.declaringClass: ${expr.declaringClass}")
+                    println("Expression.instance: ${expr.instance}")
+                    println("Expression.type: ${expr.type}")
+                    if (!expr.isImplicitThis) {
+//                        val target = expr.objectExpression as? VariableExpression
+//                        println(expr.objectExpression)
+                    }
+                    super.transform(expr)
+                } else {
+                    super.transform(expr)
+                }
+            }
+        }
+        source.ast.methods.forEach { trn.visitMethod(it) }
+        source.ast.classes.forEach { trn.visitClass(it) }
+    }
 
-
-        if (namedArgumentMethodCalls.isNotEmpty()) {
-            println(source.name)
-            println(namedArgumentMethodCalls.joinToString(",\n  ", "[\n  ", "\n]"))
+    private fun isNamedArgumentMethodCall(expression: Expression?): Boolean {
+        contract {
+            returns(true) implies (expression is MethodCallExpression)
+        }
+        return when (expression) {
+            is MethodCallExpression -> (expression.arguments as? TupleExpression)?.expressions?.singleOrNull() is NamedArgumentListExpression
+            else -> false
         }
     }
 
