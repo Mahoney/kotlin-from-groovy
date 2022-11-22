@@ -7,28 +7,36 @@
  */
 
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.7.20'
+    id 'org.jetbrains.kotlin.jvm' version '1.7.21'
     id 'java-library'
+    id 'groovy'
 }
 
 group 'uk.org.lidalia'
 version '1.0.0'
 
 repositories {
-    // Use Maven Central for resolving dependencies.
     mavenCentral()
 }
 
 dependencies {
     // Use the latest Groovy version for building this library
-    implementation 'org.codehaus.groovy:groovy-all:3.0.10'
+    implementation 'org.apache.groovy:groovy-all:4.0.6'
 
     // Use the awesome Spock testing and specification framework even with Java
-    testImplementation 'org.spockframework:spock-core:2.1-groovy-3.0'
+    testImplementation 'org.spockframework:spock-core:2.3-groovy-4.0'
     testImplementation 'junit:junit:4.13.2'
 }
 
 tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+}
+
+tasks.named('compileGroovy') {
+    classpath += files(tasks.compileKotlin.destinationDirectory)
+}
+
+tasks.named('compileTestGroovy') {
+    classpath += files(tasks.compileTestKotlin.destinationDirectory)
 }
