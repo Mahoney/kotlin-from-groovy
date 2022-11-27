@@ -7,9 +7,8 @@ data class DataClass(
 )
 
 data class DataClassWithDefaultValues(
-    val argument1: String = "",
-    val argument2: Int? = null,
-    val argument3: Boolean,
+    val argument1: String = "argument1",
+    val argument2: String = "argument2",
 )
 
 data class DataClassWithCustomCopyMethod(
