@@ -1,8 +1,10 @@
 package uk.org.lidalia.kotlinfromgroovy.testsupport
 
+@Suppress("MemberVisibilityCanBePrivate")
 class ClassWithComponents(
     val property1: String,
     val property2: Int,
+    @Suppress("unused")
     val property3: Boolean,
 ) {
 

@@ -60,7 +60,7 @@ class NamedArgumentsSpec extends Specification {
                 new Call(
                     'functionWithMapArgument',
                     [
-                        argument1: [entry1: 'entry1']
+                        argument1: [argument1: [entry1: 'entry1']]
                     ]
                 )
             ]
@@ -158,8 +158,8 @@ class NamedArgumentsSpec extends Specification {
                 new Call(
                     'functionWithOtherAndMapArgument',
                     [
-                        argument1: [entry1: 'entry1'],
-                        argument2: 'argument2'
+                        argument1: 'argument1',
+                        argument2: [entry1: 'entry1'],
                     ]
                 )
             ]
@@ -181,5 +181,15 @@ class NamedArgumentsSpec extends Specification {
                     ]
                 )
             ]
+    }
+
+    def 'cannot call a method with an incorrect argument'() {
+
+        when:
+            classUnderTest.functionWithMultipleArguments(argument4: "does not exist")
+
+        then:
+            def exception = thrown(IllegalArgumentException)
+            exception.message == 'Cannot find a parameter with this name: argument4'
     }
 }

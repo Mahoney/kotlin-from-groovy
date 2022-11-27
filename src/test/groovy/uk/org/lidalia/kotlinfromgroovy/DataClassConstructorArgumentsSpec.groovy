@@ -111,11 +111,10 @@ class DataClassConstructorArgumentsSpec extends Specification {
     def 'cannot construct a data class with positional and named arguments in wrong order'() {
 
         when:
-            def instance = new DataClassWithDefaultValues(
+            new DataClassWithDefaultValues(
                 argument2: "different argument2",
                 "different argument1",
             )
-
 
         then:
             def exception = thrown(IllegalArgumentException)
@@ -125,14 +124,25 @@ class DataClassConstructorArgumentsSpec extends Specification {
     def 'cannot construct a data class with positional and named arguments in wrong order 2'() {
 
         when:
-            def instance = new DataClassWithDefaultValues(
+            new DataClassWithDefaultValues(
                 "different argument1",
                 argument1: "different argument1",
             )
 
-
         then:
             def exception = thrown(IllegalArgumentException)
             exception.message == 'An argument is already passed for this parameter'
+    }
+
+    def 'cannot construct a data class with an incorrect argument'() {
+
+        when:
+            new DataClassWithDefaultValues(
+                argument3: "does not exist",
+            )
+
+        then:
+            def exception = thrown(IllegalArgumentException)
+            exception.message == 'Cannot find a parameter with this name: argument3'
     }
 }

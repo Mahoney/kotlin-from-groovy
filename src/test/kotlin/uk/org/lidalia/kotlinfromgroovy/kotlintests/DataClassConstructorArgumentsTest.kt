@@ -115,4 +115,12 @@ class DataClassConstructorArgumentsTest {
 //            argument1 = "different argument1",
 //        )
     }
+
+    @Test
+    fun `cannot construct a data class with an incorrect argument`() {
+
+//        val instance = DataClassWithDefaultValues(
+//            argument3 = "does not exist",
+//        )
+    }
 }

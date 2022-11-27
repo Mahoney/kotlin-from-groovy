@@ -120,6 +120,7 @@ class NamedArgumentsTest {
         ))
     }
 
+    @Test
     fun `can call a method that takes another arg and a Map using named arguments`() {
 
         classUnderTest.functionWithOtherAndMapArgument(
@@ -131,13 +132,14 @@ class NamedArgumentsTest {
             Call(
                 "functionWithOtherAndMapArgument",
                 linkedMapOf(
-                    "argument1" to mapOf("entry1" to "entry1"),
-                    "argument2" to "argument2"
+                    "argument1" to "argument1",
+                    "argument2" to mapOf("entry1" to "entry1"),
                 )
             )
         ))
     }
 
+    @Test
     fun `can call a method that takes a LinkedHashMap`() {
 
         classUnderTest.functionWithLinkedMapArgument(
@@ -153,5 +155,11 @@ class NamedArgumentsTest {
                 )
             )
         ))
+    }
+
+    @Test
+    fun `cannot call a method with an incorrect argument`() {
+
+//        classUnderTest.functionWithMultipleArguments(argument4 = "does not exist")
     }
 }
