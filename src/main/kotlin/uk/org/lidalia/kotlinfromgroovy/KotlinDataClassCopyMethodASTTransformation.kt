@@ -18,7 +18,7 @@ import org.codehaus.groovy.transform.GroovyASTTransformation
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
-@GroovyASTTransformation(phase= CompilePhase.INSTRUCTION_SELECTION)
+@GroovyASTTransformation(phase = CompilePhase.INSTRUCTION_SELECTION)
 class KotlinDataClassCopyMethodASTTransformation : AbstractASTTransformation() {
 
     override fun visit(nodes: Array<ASTNode>, source: SourceUnit) {
