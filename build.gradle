@@ -7,9 +7,14 @@
  */
 
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.7.21'
+    id 'org.jetbrains.kotlin.jvm' version '1.9.20'
     id 'java-library'
     id 'groovy'
+    id 'com.autonomousapps.dependency-analysis' version '1.25.0'
+    id 'org.jmailen.kotlinter' version '4.0.0'
+    id 'com.dorongold.task-tree' version '2.1.1'
+    id 'com.github.ben-manes.versions' version '0.49.0'
+    id 'net.idlestate.gradle-duplicate-classes-check' version '1.2.0'
 }
 
 group 'uk.org.lidalia'
@@ -19,13 +24,28 @@ repositories {
     mavenCentral()
 }
 
+def versions = [
+    groovy    : '4.0.15',
+    spock     : '2.3-groovy-4.0',
+]
+
 dependencies {
     // Use the latest Groovy version for building this library
-    implementation 'org.apache.groovy:groovy-all:4.0.6'
+    api "org.apache.groovy:groovy:${versions.groovy}"
+    runtimeOnly "org.apache.groovy:groovy-all:${versions.groovy}"
 
     // Use the awesome Spock testing and specification framework even with Java
-    testImplementation 'org.spockframework:spock-core:2.3-groovy-4.0'
-    testImplementation 'junit:junit:4.13.2'
+    testImplementation "org.spockframework:spock-core:${versions.spock}"
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.1'
+
+    modules {
+        module("org.hamcrest:hamcrest-core") {
+            replacedBy("org.hamcrest:hamcrest")
+        }
+        module("org.hamcrest:hamcrest-library") {
+            replacedBy("org.hamcrest:hamcrest")
+        }
+    }
 }
 
 tasks.named('test') {
@@ -40,3 +60,26 @@ tasks.named('compileGroovy') {
 tasks.named('compileTestGroovy') {
     classpath += files(tasks.compileTestKotlin.destinationDirectory)
 }
+
+checkForDuplicateClasses {
+    def configs = configurations.findAll { it.name !in [
+            'adviceAllConsumer',
+            'kotlinBuildToolsApiClasspath',
+    ] }
+    configurationsToCheck(configs)
+}
+
+dependencyAnalysis {
+    issues {
+        // configure for all projects
+        all {
+            // set behavior for all issue types
+            onAny {
+                severity("fail")
+                exclude("org.jetbrains.kotlin:kotlin-stdlib")
+            }
+        }
+    }
+}
+
+check.dependsOn('buildHealth')

@@ -21,87 +21,108 @@ import kotlin.contracts.contract
 @GroovyASTTransformation(phase = CompilePhase.INSTRUCTION_SELECTION)
 class KotlinDataClassCopyMethodASTTransformation : AbstractASTTransformation() {
 
-    override fun visit(nodes: Array<ASTNode>, source: SourceUnit) {
-        val trn = object : ClassCodeExpressionTransformer() {
-            override fun getSourceUnit(): SourceUnit = source
-            override fun transform(expr: Expression?): Expression? {
-                return if (isNamedArgumentMethodCall(expr)) {
-                    println()
-                    println("Expression: $expr")
-                    println("Expression.text: ${expr.text}")
-                    println("Expression.isImplicitThis: ${expr.isImplicitThis}")
-                    println("Expression.objectExpression: ${expr.objectExpression}")
-                    println("Expression.methodTarget: ${expr.methodTarget}")
-                    println("Expression.method: ${expr.method}")
-                    println("Expression.declaringClass: ${expr.declaringClass}")
-                    println("Expression.instance: ${expr.instance}")
-                    println("Expression.type: ${expr.type}")
-                    if (!expr.isImplicitThis) {
+  override fun visit(nodes: Array<ASTNode>, source: SourceUnit) {
+    val trn = object : ClassCodeExpressionTransformer() {
+      override fun getSourceUnit(): SourceUnit = source
+
+      override fun transform(expr: Expression?): Expression? {
+        return if (isNamedArgumentMethodCall(expr)) {
+          println()
+          println("Expression: $expr")
+          println("Expression.text: ${expr.text}")
+          println("Expression.isImplicitThis: ${expr.isImplicitThis}")
+          println("Expression.objectExpression: ${expr.objectExpression}")
+          println("Expression.methodTarget: ${expr.methodTarget}")
+          println("Expression.method: ${expr.method}")
+          println("Expression.declaringClass: ${expr.declaringClass}")
+          println("Expression.instance: ${expr.instance}")
+          println("Expression.type: ${expr.type}")
+          if (!expr.isImplicitThis) {
 //                        val target = expr.objectExpression as? VariableExpression
 //                        println(expr.objectExpression)
-                    }
-                    super.transform(expr)
-                } else {
-                    super.transform(expr)
+          }
+          super.transform(expr)
+        } else {
+          super.transform(expr)
+        }
+      }
+    }
+    source.ast.methods.forEach { trn.visitMethod(it) }
+    source.ast.classes.forEach { trn.visitClass(it) }
+  }
+
+  private fun isNamedArgumentMethodCall(expression: Expression?): Boolean {
+    contract {
+      returns(true) implies (expression is MethodCallExpression)
+    }
+    return when (expression) {
+      is MethodCallExpression ->
+        tupleExpression(expression) is NamedArgumentListExpression
+      else -> false
+    }
+  }
+
+  private fun tupleExpression(expression: MethodCallExpression): Expression? =
+    (expression.arguments as? TupleExpression)?.expressions?.singleOrNull()
+
+  private fun SourceUnit.findNamedArgumentMethodCalls(): List<MethodCallExpression> =
+    ast.classes.map { classNode ->
+
+      val fieldInitialiseMethodCalls = classNode.fields.mapNotNull { fieldNode ->
+        if (fieldNode.hasInitialExpression()) {
+          val initialExpression = fieldNode.initialExpression
+          if (initialExpression is MethodCallExpression) {
+            filterMethodCallExpression(initialExpression)
+          } else {
+            null
+          }
+        } else {
+          null
+        }
+      }
+
+      val inMethodCalls = classNode.methods.mapNotNull { methodNode ->
+        val code = methodNode.code
+        if (code is BlockStatement) {
+          code.statements
+            .filterIsInstance<ExpressionStatement>()
+            .mapNotNull { expressionStatement ->
+              when (val expression = expressionStatement.expression) {
+                is MethodCallExpression -> filterMethodCallExpression(expression)
+                is DeclarationExpression -> {
+                  when (val rightExpression = expression.rightExpression) {
+                    is MethodCallExpression -> filterMethodCallExpression(
+                      rightExpression,
+                    )
+                    else -> null
+                  }
                 }
+
+                else -> null
+              }
             }
+        } else {
+          null
         }
-        source.ast.methods.forEach { trn.visitMethod(it) }
-        source.ast.classes.forEach { trn.visitClass(it) }
-    }
-
-    private fun isNamedArgumentMethodCall(expression: Expression?): Boolean {
-        contract {
-            returns(true) implies (expression is MethodCallExpression)
-        }
-        return when (expression) {
-            is MethodCallExpression -> (expression.arguments as? TupleExpression)?.expressions?.singleOrNull() is NamedArgumentListExpression
-            else -> false
-        }
-    }
-
-    private fun SourceUnit.findNamedArgumentMethodCalls(): List<MethodCallExpression> = ast.classes.map { classNode ->
-
-        val fieldInitialiseMethodCalls = classNode.fields.mapNotNull { fieldNode ->
-            if (fieldNode.hasInitialExpression()) {
-                val initialExpression = fieldNode.initialExpression
-                if (initialExpression is MethodCallExpression) {
-                    filterMethodCallExpression(initialExpression)
-                } else null
-            } else null
-        }
-
-        val inMethodCalls = classNode.methods.mapNotNull { methodNode ->
-            val code = methodNode.code
-            if (code is BlockStatement) {
-                code.statements
-                        .filterIsInstance<ExpressionStatement>()
-                        .mapNotNull { expressionStatement ->
-                            when (val expression = expressionStatement.expression) {
-                                is MethodCallExpression -> filterMethodCallExpression(expression)
-                                is DeclarationExpression -> {
-                                    when (val rightExpression = expression.rightExpression) {
-                                        is MethodCallExpression -> filterMethodCallExpression(rightExpression)
-                                        else -> null
-                                    }
-                                }
-
-                                else -> null
-                            }
-                        }
-            } else null
-        }
+      }
         .flatten()
 
-        fieldInitialiseMethodCalls + inMethodCalls
+      fieldInitialiseMethodCalls + inMethodCalls
     }.flatten()
 
-    private fun filterMethodCallExpression(initialExpression: MethodCallExpression): MethodCallExpression? {
-        val arguments = initialExpression.arguments
-        return if (arguments is TupleExpression && (arguments.expressions.singleOrNull() is NamedArgumentListExpression)) {
-            initialExpression
-        } else null
+  private fun filterMethodCallExpression(
+    initialExpression: MethodCallExpression,
+  ): MethodCallExpression? {
+    val arguments = initialExpression.arguments
+    return if (
+      arguments is TupleExpression &&
+      (arguments.expressions.singleOrNull() is NamedArgumentListExpression)
+    ) {
+      initialExpression
+    } else {
+      null
     }
+  }
 }
 
 /*
