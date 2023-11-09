@@ -27,6 +27,26 @@ jobs:
         with:
           arguments: lintKotlin assemble buildHealth checkForDuplicateClasses
 
+      - name: Archive test results
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: test-reports
+          path: build/reports
+
+  test:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@v1
+
       - name: Run tests
         uses: gradle/gradle-build-action@v2
         with:
