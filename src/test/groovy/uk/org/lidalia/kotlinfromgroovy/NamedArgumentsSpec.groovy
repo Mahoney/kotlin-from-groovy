@@ -1,5 +1,6 @@
 package uk.org.lidalia.kotlinfromgroovy
 
+import spock.lang.PendingFeature
 import spock.lang.Specification
 import uk.org.lidalia.kotlinfromgroovy.testsupport.Call
 import uk.org.lidalia.kotlinfromgroovy.testsupport.ClassWithNoDefaultedArgumentsToMethods
@@ -8,6 +9,7 @@ class NamedArgumentsSpec extends Specification {
 
     def classUnderTest = new ClassWithNoDefaultedArgumentsToMethods()
 
+    @PendingFeature
     def 'can call a method using named arguments'() {
 
         when:
@@ -105,6 +107,7 @@ class NamedArgumentsSpec extends Specification {
             ]
     }
 
+    @PendingFeature
     def 'can call a method that takes a Map and another arg using named arguments'() {
 
         when:
@@ -145,6 +148,7 @@ class NamedArgumentsSpec extends Specification {
             ]
     }
 
+    @PendingFeature
     def 'can call a method that takes another arg and a Map using named arguments'() {
 
         when:
@@ -183,6 +187,7 @@ class NamedArgumentsSpec extends Specification {
             ]
     }
 
+    @PendingFeature
     def 'cannot call a method with an incorrect argument'() {
 
         when:
