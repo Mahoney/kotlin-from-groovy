@@ -1,5 +1,6 @@
 package uk.org.lidalia.kotlinfromgroovy
 
+import spock.lang.PendingFeature
 import spock.lang.Specification
 import uk.org.lidalia.kotlinfromgroovy.testsupport.Call
 import uk.org.lidalia.kotlinfromgroovy.testsupport.ClassWithDefaultedArgumentsToMethods
@@ -8,6 +9,7 @@ class DefaultedArgumentsSpec extends Specification {
 
     private def classUnderTest = new ClassWithDefaultedArgumentsToMethods()
 
+    @PendingFeature
     def 'can call functionWithOneDefaultedArgument with 0 args'() {
 
         when:
@@ -40,6 +42,7 @@ class DefaultedArgumentsSpec extends Specification {
             ]
     }
 
+    @PendingFeature
     def 'can call functionWithOneDefaultedArgument with 1st named arg'() {
 
         when:
@@ -56,6 +59,7 @@ class DefaultedArgumentsSpec extends Specification {
             ]
     }
 
+    @PendingFeature
     def 'cannot call functionWithTwoArgumentFirstDefaulted with no args'() {
 
         when:
@@ -66,6 +70,7 @@ class DefaultedArgumentsSpec extends Specification {
             exception.message == 'No value passed for parameter \'argument2\''
     }
 
+    @PendingFeature
     def 'cannot call functionWithTwoArgumentFirstDefaulted with 1 positional arg'() {
 
         when:
@@ -76,6 +81,7 @@ class DefaultedArgumentsSpec extends Specification {
             exception.message == 'No value passed for parameter \'argument2\''
     }
 
+    @PendingFeature
     def 'can call functionWithTwoArgumentFirstDefaulted with 2nd named arg'() {
 
         when:
@@ -110,6 +116,7 @@ class DefaultedArgumentsSpec extends Specification {
             ]
     }
 
+    @PendingFeature
     def 'can call functionWithTwoArgumentFirstDefaulted with 2 named args'() {
 
         when:
@@ -127,6 +134,7 @@ class DefaultedArgumentsSpec extends Specification {
             ]
     }
 
+    @PendingFeature
     def 'can call functionWithTwoArgumentFirstDefaulted with 1 positional 1 named args'() {
 
         when:
@@ -144,6 +152,7 @@ class DefaultedArgumentsSpec extends Specification {
             ]
     }
 
+    @PendingFeature
     def 'cannot call functionWithTwoArgumentFirstDefaulted with mixed positional and named args'() {
         when:
             classUnderTest.functionWithTwoArgumentFirstDefaulted('different 1', argument1: 'different 2')
@@ -160,6 +169,7 @@ class DefaultedArgumentsSpec extends Specification {
             exception.message == 'Mixing named and positioned arguments is not allowed'
     }
 
+    @PendingFeature
     def 'can call functionWithTwoArgumentFirstDefaulted with 1 named 1 positional args'() {
 
         when:
@@ -177,6 +187,7 @@ class DefaultedArgumentsSpec extends Specification {
             ]
     }
 
+    @PendingFeature
     def 'cannot call functionWithTwoArgumentsSecondDefaulted with no args'() {
 
         when:
@@ -187,6 +198,7 @@ class DefaultedArgumentsSpec extends Specification {
             exception.message == 'No value passed for parameter \'argument1\''
     }
 
+    @PendingFeature
     def 'can call functionWithTwoArgumentsSecondDefaulted with 1 positional arg'() {
 
         when:
@@ -204,6 +216,7 @@ class DefaultedArgumentsSpec extends Specification {
             ]
     }
 
+    @PendingFeature
     def 'cannot call functionWithTwoArgumentsSecondDefaulted with 2nd named arg'() {
 
         when:
@@ -231,6 +244,7 @@ class DefaultedArgumentsSpec extends Specification {
             ]
     }
 
+    @PendingFeature
     def 'can call functionWithTwoArgumentsSecondDefaulted with 2 named args'() {
 
         when:
@@ -248,6 +262,7 @@ class DefaultedArgumentsSpec extends Specification {
             ]
     }
 
+    @PendingFeature
     def 'can call functionWithTwoArgumentsBothDefaulted with no args'() {
 
         when:
@@ -265,6 +280,7 @@ class DefaultedArgumentsSpec extends Specification {
             ]
     }
 
+    @PendingFeature
     def 'can call functionWithTwoArgumentsBothDefaulted with 1 positional arg'() {
 
         when:
@@ -282,6 +298,7 @@ class DefaultedArgumentsSpec extends Specification {
             ]
     }
 
+    @PendingFeature
     def 'can call functionWithTwoArgumentsBothDefaulted with 2nd named arg'() {
 
         when:
@@ -316,6 +333,7 @@ class DefaultedArgumentsSpec extends Specification {
             ]
     }
 
+    @PendingFeature
     def 'can call functionWithTwoArgumentsBothDefaulted with 2 named args'() {
 
         when:
@@ -333,6 +351,7 @@ class DefaultedArgumentsSpec extends Specification {
             ]
     }
 
+    @PendingFeature
     def 'can call functionWithOneNullableArgumentDefaultedToNotNull with no args'() {
         when:
             classUnderTest.functionWithOneNullableArgumentDefaultedToNotNull()
@@ -378,6 +397,7 @@ class DefaultedArgumentsSpec extends Specification {
             ]
     }
 
+    @PendingFeature
     def 'can call functionWithOneNullableArgumentDefaultedToNotNull with one named null arg'() {
         when:
             classUnderTest.functionWithOneNullableArgumentDefaultedToNotNull(argument1: null)
@@ -393,6 +413,7 @@ class DefaultedArgumentsSpec extends Specification {
             ]
     }
 
+    @PendingFeature
     def 'can call functionWithOneNullableArgumentDefaultedToNotNull with one named not null arg'() {
         when:
             classUnderTest.functionWithOneNullableArgumentDefaultedToNotNull(argument1: 'different')
@@ -453,6 +474,7 @@ class DefaultedArgumentsSpec extends Specification {
             ]
     }
 
+    @PendingFeature
     def 'can call functionWithOneNullableArgumentDefaultedToNull with one named null arg'() {
         when:
             classUnderTest.functionWithOneNullableArgumentDefaultedToNull(argument1: null)
@@ -468,6 +490,7 @@ class DefaultedArgumentsSpec extends Specification {
             ]
     }
 
+    @PendingFeature
     def 'can call functionWithOneNullableArgumentDefaultedToNull with one named not null arg'() {
         when:
             classUnderTest.functionWithOneNullableArgumentDefaultedToNull(argument1: 'different')

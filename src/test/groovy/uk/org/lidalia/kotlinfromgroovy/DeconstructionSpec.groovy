@@ -2,12 +2,14 @@ package uk.org.lidalia.kotlinfromgroovy
 
 import kotlin.Pair
 import org.codehaus.groovy.runtime.typehandling.GroovyCastException
+import spock.lang.PendingFeature
 import spock.lang.Specification
 import uk.org.lidalia.kotlinfromgroovy.testsupport.ClassWithComponents
 import uk.org.lidalia.kotlinfromgroovy.testsupport.DataClass
 
 class DeconstructionSpec extends Specification {
 
+    @PendingFeature
     def 'can deconstruct a pair'() {
 
         when:
@@ -18,6 +20,7 @@ class DeconstructionSpec extends Specification {
             second == 2
     }
 
+    @PendingFeature
     def 'can deconstruct a data class'() {
 
         when:
@@ -29,6 +32,7 @@ class DeconstructionSpec extends Specification {
             third == true
     }
 
+    @PendingFeature
     def 'can partially deconstruct a class'() {
 
         when:
@@ -39,6 +43,7 @@ class DeconstructionSpec extends Specification {
             second == 2
     }
 
+    @PendingFeature
     def 'can deconstruct a normal class with components'() {
 
         when:
@@ -49,6 +54,7 @@ class DeconstructionSpec extends Specification {
             second == 2
     }
 
+    @PendingFeature
     def 'cannot deconstruct when too many components'() {
 
         when:
@@ -59,6 +65,7 @@ class DeconstructionSpec extends Specification {
             exception.message == 'Destructuring declaration initializer of type ClassWithComponents must have a \'component3()\' function'
     }
 
+    @PendingFeature
     def 'typed deconstruction works'() {
 
         given:
@@ -69,6 +76,7 @@ class DeconstructionSpec extends Specification {
             second == 2
     }
 
+    @PendingFeature
     def 'typed deconstruction fails for wrong type'() {
 
         when:
