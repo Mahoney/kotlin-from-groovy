@@ -28,7 +28,7 @@ jobs:
           arguments: lintKotlin assemble buildHealth checkForDuplicateClasses
 
       - name: Archive test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: test-reports
@@ -61,7 +61,7 @@ jobs:
             build/test-results/**/*.xml
 
       - name: Archive test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: test-reports
