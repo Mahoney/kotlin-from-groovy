@@ -1,5 +1,5 @@
 [versions]
-groovy = "4.0.16"
+groovy = "4.0.17"
 kotlin = "1.9.21"
 
 [libraries]
