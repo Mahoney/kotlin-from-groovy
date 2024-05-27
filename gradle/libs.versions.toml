@@ -1,6 +1,6 @@
 [versions]
 groovy = "4.0.21"
-kotlin = "1.9.24"
+kotlin = "2.0.0"
 
 [libraries]
 groovy = { module = "org.apache.groovy:groovy", version.ref = "groovy" }
